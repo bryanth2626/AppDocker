@@ -4,9 +4,23 @@ const multer= require("multer")
 const path= require("path")
 
 //Cliente que gestiona servicio AWS
-const { RekognitionClient, DetectLabelsCommand } = require("@aws-sdk/client-rekognition")
+const { RekognitionClient, DetectLabelsCommand } = require("@aws-sdk/client-rekognition");
 
 //OPCIONAR (considerarse cuadno se relacione pruebas con FLOCI)
+const { mockClient } = require("aws-sdk-client-mock")
+const rekognitionMock = mockClient(RekognitionClient)
+
+//Definir la repsuesta eprsonalizada
+//Cliente detecte evento, devolverá..
+rekognitionMock.on(DetectLabelsCommand).resolves({
+  Labels: [
+    {Name: 'Hombre', Confidence: 99.4 },
+    {Name: 'Niño', Confidence: 95.2 },
+    {Name: 'Perro', Confidence: 80.1 },
+    {Name: 'Mujer', Confidence: 98.4 },
+
+  ]
+})
 //Respuesta prueba
 
 const app= express()
@@ -15,11 +29,11 @@ const port= process.env.PORT || 3000
 //INICIAR EL SERVICIO RECONOCIMIENTO
 
 const rekognitionClient = new RekognitionClient({
-  region: process.env.AWS_REGION || 'us-east-1',
-  endpoint: 'http://localhost:4566',
+  region: process.env.AWS_DEFAULT_REGION || process.env.AWS_REGION || 'us-east-1',
+  endpoint: process.env.AWS_ENDPOINT_URL || 'http://localhost:4566',
   credentials: {
-    accessKeyId:'AWS_ACCESS-KEY_ID',
-    secretAccessKey: 'AWS_SECRET_ACCESS_KEY'
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID || 'test',
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || 'test'
   }
 })
 
@@ -48,12 +62,12 @@ app.post('/api/analizar', upload.single('imagen'), async(req, res)=> {
     
     //Instanciar el comando de deteccion
     const command= new DetectLabelsCommand(params)
-    const responde= await rekognitionClient.send(command)
+    const response= await rekognitionClient.send(command)
 
     //Enviar la repsuesta al front com JSON
     res.json({
       success: true,
-      labels: response.Labels
+      labels: response.Labels || []
 
     })
 
