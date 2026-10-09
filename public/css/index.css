@@ -101,3 +101,64 @@ h3 {
   font-size: 0.95rem;
   color: #4a4a4a;
 }
+/* Formulario de PDF */
+#pdfForm {
+max-width: 600px;
+margin: 20px auto;
+padding: 20px;
+background-color: white;
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#pdfForm label {
+display: block;
+margin-bottom: 10px;
+font-weight: bold;
+}
+
+#pdfForm input[type="file"] {
+display: block;
+width: 100%;
+margin-bottom: 15px;
+padding: 10px;
+border: 1px solid #ccc;
+border-radius: 5px;
+}
+
+#pdfForm button {
+padding: 10px 18px;
+background-color: #245b8f;
+color: white;
+border: none;
+border-radius: 5px;
+cursor: pointer;
+}
+
+#pdfForm button:hover {
+background-color: #193f64;
+}
+
+/* Resultados de Textract */
+#mensajePDF {
+text-align: center;
+margin: 15px auto;
+}
+
+#listaTexto {
+max-width: 600px;
+margin: 15px auto;
+padding: 20px 40px;
+background-color: white;
+border-radius: 8px;
+}
+
+/* Aviso cuando el PDF supera los 5 MB */
+.errorPDF {
+color: red;
+font-size: 24px;
+font-weight: bold;
+text-transform: uppercase;
+text-align: center;
+margin: 20px auto;
+}

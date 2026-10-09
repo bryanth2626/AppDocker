@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Document</title>
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="css/index.css">
 </head>
 <body>
   <h1>Hola bro</h1>
@@ -21,50 +21,31 @@
     <h3>Resultados del análisis</h3>
     <ul id="listaEtiquetas"></ul>
   </div>
+    <!-- TEXTRACT: SUBIR PDF -->
 
-  <script>
-    const form= document.getElementById("uploadForm")
-    const listaEtiquetas = document.getElementById("listaEtiquetas")
+  <hr>
 
-    form.addEventListener("submit", async(e)=>{
-      e.preventDefault() //Detenemos el envío
+  <h2>Reconocimiento de texto en PDF</h2>
 
-      //FORMDATA= contenedor de datos
-      const formData = new FormData(form)
+  <form id="pdfForm">
+    <div>
+      <label for="documento">Seleccione un PDF (menos de 5 MB)</label>
+      <input type="file" name="documento" id="documento"
+        accept="application/pdf" required>
+    </div>
 
-      listaEtiquetas.innerHTML = `<li>Analizando imagen con AWS...<li>`
+    <button type="submit">Analizar PDF</button>
+  </form>
 
-      //Enviar los datos por la API...
-      try{
-        const response = await fetch('api/analizar', {
-          method: 'POST',
-          body: formData
-        })
-        //El servicio AWS inicia la resolucion..
-        const data = await response.json()
-        if (data.success){
-          listaEtiquetas.innerHTML = ``
-          data.labels.forEach(label => {
-            const li = document.createElement("li")
-            li.textContent = `Etiqueta: ${label.Name} - Confianza: ${label.Confidence.toFixed(2)}%`
-            listaEtiquetas.appendChild(li) // <-- ESTA LÍNEA ES OBLIGATORIA
-          })
-        }else{
-          //CUIDADO: No se deben exponer todos los errores
-          //¿Como se manejan los errores en backend?
-          listaEtiquetas.innerHTML=`
-            <li>${data.error}</li>
-            <li>${data.details}</li>  
-            <li>${data.code}</li>  
-          
-          `
-        }
+  <div>
+    <h3>Resultado de Textract</h3>
+    <p id="mensajePDF"></p>
+    <ul id="listaTexto"></ul>
+  </div>
 
-      }catch(error){
-        console.error(error)
-        listaEtiquetas.innerHTML= `<li>Error de conexion<li>`
-      } 
-    })
-  </script>
+  <script src="js/rekognition.js"></script>
+  <script src="js/extract_pdf.js"></script>
+
+
 </body>
 </html>
